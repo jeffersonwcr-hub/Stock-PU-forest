@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Stock Bajo - Forest DS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <div class="max-w-6xl mx-auto bg-white shadow-xl rounded-2xl p-6">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">📦 Dashboard de Stock Bajo</h1>
+    <p class="text-gray-600 mb-6">Dark Store: <span class="font-semibold text-blue-700">Forest</span></p>
+    
+    <!-- Filtro de stock -->
+    <div class="flex items-end gap-4 mb-6">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Mostrar productos con stock ≤</label>
+        <input type="number" id="minStock" value="5" 
+          class="mt-1 w-32 rounded-lg border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+      </div>
+      <button onclick="filtrar()" 
+        class="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow hover:bg-blue-700">
+        Filtrar
+      </button>
+    </div>
+
+    <!-- Tabla -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-gray-200">
+            <th class="p-3">DS</th>
+            <th class="p-3">Producto</th>
+            <th class="p-3">EAN</th>
+            <th class="p-3">Stock</th>
+          </tr>
+        </thead>
+        <tbody id="tabla" class="divide-y divide-gray-200"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let datos = [];
+
+    // Cargar CSV
+    Papa.parse("./data.csv", {
+      download: true,
+      header: true,
+      complete: function(results) {
+        // Solo productos de DS Forest
+        datos = results.data.filter(item => item.DS === "Forest");
+        mostrar(datos);
+      }
+    });
+
+    function mostrar(lista) {
+      const tbody = document.getElementById("tabla");
+      tbody.innerHTML = "";
+      lista.forEach(item => {
+        if (item.Producto && item.EAN && item.Stock) {
+          const stockNum = parseInt(item.Stock);
+          let color = "text-green-600"; // stock alto
+          if (stockNum <= 5) color = "text-red-600 font-bold"; // stock bajo
+          else if (stockNum <= 15) color = "text-yellow-600"; // stock medio
+
+          const fila = `
+            <tr class="hover:bg-gray-50">
+              <td class="p-3">${item.DS}</td>
+              <td class="p-3">${item.Producto}</td>
+              <td class="p-3">${item.EAN}</td>
+              <td class="p-3 ${color}">${item.Stock}</td>
+            </tr>`;
+          tbody.innerHTML += fila;
+        }
+      });
+    }
+
+    function filtrar() {
+      const min = parseInt(document.getElementById("minStock").value);
+      const filtrados = datos.filter(p => parseInt(p.Stock) <= min);
+      mostrar(filtrados);
+    }
+  </script>
+</body>
+</html>
