@@ -1,10 +1,34 @@
-<script>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventario en tiempo real</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f4f4f4; }
+    #mensaje { margin-top: 15px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Inventario en tiempo real</h1>
+
+  <!-- Aquí va el contenedor de la tabla -->
+  <div id="mensaje"></div>
+  <table id="tabla">
+    <thead id="thead"></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <!-- Tu script -->
+  <script>
     let datos = [];
     let encabezados = [];
     let idxStock = -1;
 
     async function cargarCSV() {
-      const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDJUlMlBorJ7CrMhC7Rc442tQEOVyWo-4xvjZL19CdeO0j1GY2ELorKL9lnnb_5IG2-vlw8-RcLAhY/pub?gid=0&single=true&output=csv"; // <-- tu link aquí
+      const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDJUlMlBorJ7CrMhC7Rc442tQEOVyWo-4xvjZL19CdeO0j1GY2ELorKL9lnnb_5IG2-vlw8-RcLAhY/pub?gid=0&single=true&output=csv";
       const response = await fetch(url);
       const texto = await response.text();
       const filas = texto.trim().split("\n").map(f => f.split(","));
@@ -14,5 +38,24 @@
       mostrarTabla(datos, "Mostrando todo el inventario");
     }
 
-    // ... resto del código igual
-</script>
+    function mostrarTabla(filas, mensaje) {
+      const thead = document.getElementById("thead");
+      const tbody = document.getElementById("tbody");
+      document.getElementById("mensaje").textContent = mensaje + ` (${filas.length} productos)`;
+
+      thead.innerHTML = "<tr>" + encabezados.map(h => `<th>${h}</th>`).join("") + "</tr>";
+
+      tbody.innerHTML = filas.map(f => {
+        const valor = parseFloat(f[idxStock]);
+        return "<tr><td>" + f.join("</td><td>") + "</td></tr>";
+      }).join("");
+    }
+
+    // Primera carga
+    cargarCSV();
+
+    // Auto-refresh cada 30s
+    setInterval(cargarCSV, 30000);
+  </script>
+</body>
+</html>
