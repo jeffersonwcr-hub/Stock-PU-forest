@@ -1,16 +1,18 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stock Bajo</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1>Artículos con Pocas Unidades</h1>
-  <button onclick="mostrarStockBajo()">Mostrar artículos con bajo stock</button>
-  <div id="resultado"></div>
+<script>
+    let datos = [];
+    let encabezados = [];
+    let idxStock = -1;
 
-  <script src="script.js"></script>
-</body>
-</html>
+    async function cargarCSV() {
+      const url = "https://docs.google.com/spreadsheets/d/17tKi6u1Thvc6WPlxiXVcu3n5zzRE4lhKQCdOvOWCU70/edit?usp=drive_link"; // <-- tu link aquí
+      const response = await fetch(url);
+      const texto = await response.text();
+      const filas = texto.trim().split("\n").map(f => f.split(","));
+      encabezados = filas[0];
+      idxStock = encabezados.findIndex(h => h.toLowerCase().trim() === "stock");
+      datos = filas.slice(1);
+      mostrarTabla(datos, "Mostrando todo el inventario");
+    }
+
+    // ... resto del código igual
+</script>
