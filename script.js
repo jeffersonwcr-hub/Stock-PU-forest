@@ -1,5 +1,7 @@
+<script>
 async function mostrarStockBajo() {
-  const response = await fetch('DATA.csv');
+  // ⚡ CAMBIA "DATA.csv" por tu link de Google Sheets en formato CSV
+  const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vTDJUlMlBorJ7CrMhC7Rc442tQEOVyWo-4xvjZL19CdeO0j1GY2ELorKL9lnnb_5IG2-vlw8-RcLAhY/pub?gid=0&single=true&output=csv');
   const data = await response.text();
 
   const filas = data.split('\n').slice(1); // saltamos encabezado
@@ -18,3 +20,6 @@ async function mostrarStockBajo() {
   html += '</table>';
   document.getElementById('resultado').innerHTML = html;
 }
+
+// 👉 Ejecuta la función al cargar
+mostrarStockBajo();
