@@ -4,7 +4,7 @@
     let idxStock = -1;
 
     async function cargarCSV() {
-      const url = https://docs.google.com/spreadsheets/d/17tKi6u1Thvc6WPlxiXVcu3n5zzRE4lhKQCdOvOWCU70/edit?usp=drive_link; // <-- tu link aquí
+      const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDJUlMlBorJ7CrMhC7Rc442tQEOVyWo-4xvjZL19CdeO0j1GY2ELorKL9lnnb_5IG2-vlw8-RcLAhY/pub?gid=0&single=true&output=csv"; // <-- tu link aquí
       const response = await fetch(url);
       const texto = await response.text();
       const filas = texto.trim().split("\n").map(f => f.split(","));
@@ -16,4 +16,3 @@
 
     // ... resto del código igual
 </script>
-
